@@ -55,6 +55,7 @@ class MainView extends React.Component {
     })
       .then(response => {
         // Assign the result to the state
+        console.log(response);
         this.setState({
           movies: response.data
         });
