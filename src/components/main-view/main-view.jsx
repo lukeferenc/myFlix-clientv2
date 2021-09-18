@@ -10,9 +10,9 @@ import { DirectorView } from '../director-view/director-view';
 import { RegistrationView } from '../registration-view/registration-view';
 import { GenreView } from '../genre-view/genre-view';
 import { ProfileView } from '../profile-view/profile-view';
+import { NavBar } from '../navbar-view/navbar-view';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { Container, Navbar } from 'react-bootstrap';
 import './main-view.scss';
 
 class MainView extends React.Component {
