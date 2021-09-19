@@ -12,13 +12,13 @@ export class NavBar extends React.Component {
 
   onLoggedOut = () => {
     localStorage.clear();
-    window.open('/', '_self');
+    window.open("/", "_self");
   }
 
   render() {
     const { user } = this.props;
-    const movies = `/`;
-    const profile = `/users/${user}`;
+    const movies = "/";
+    const profile = "/profile"
 
     if (!user) return null;
 

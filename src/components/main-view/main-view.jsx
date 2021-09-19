@@ -85,6 +85,7 @@ class MainView extends React.Component {
 
     return (
       <Router>
+        <NavBar user={user}/>
         <Row className="main-view justify-content-md-center">
             <Route exact path="/" render={() => {
               if (!user) return <Col>
@@ -106,11 +107,14 @@ class MainView extends React.Component {
             }} />
   
             <Route path="/profile" render={() => {
-              if (!user) return <Col>
-                <ProfileView />
-              </Col>
+                return (
+                  <Col> 
+                    <ProfileView movies={movies} user={user}/>
+                  </Col>
+                )
             }} />
 
+          
           <Route path="/movies/:movieId" render={({ match, history }) => {
             if (!user) return <Col>
               <LoginView onLoggedIn={user => this.onLoggedIn(user)} />
@@ -138,7 +142,7 @@ class MainView extends React.Component {
             </Col>
             if (movies.length === 0) return <div className="main-view" />;
             return <Col md={8}>
-              <GenreView genre={movies.find(m => m.Genre.Name === match.params.name).Genre} onBackClick={() => history.goBack()} />
+              <GenreView genreData={movies.find(m => m.Genre.Name === match.params.name).Genre} onBackClick={() => history.goBack()} />
             </Col>
           }} />
 
