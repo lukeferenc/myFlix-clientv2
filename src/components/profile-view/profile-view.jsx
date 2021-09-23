@@ -73,7 +73,7 @@ handleUpdate(e, newName, newUsername, newPassword, newEmail, newBirthday) {
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('user');
 
-    axios.put(`https://myflixbypartearroyo.herokuapp.com/users/${username}`, {
+    axios.put(`https://lukesmovies.herokuapp.com/users${username}`, {
       headers: { Authorization: `Bearer ${token}` },
       data: {
         Name: newName ? newName : this.state.Name,
