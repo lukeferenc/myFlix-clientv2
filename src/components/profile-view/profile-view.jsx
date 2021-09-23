@@ -53,6 +53,74 @@ axios.post(`https://lukesmovies.herokuapp.com/users/removefromfavs/${user}/` +
     })
 }
 
+
+handleUpdate(e, newName, newUsername, newPassword, newEmail, newBirthday) {
+    this.setState({
+      validated: null,
+    });
+
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.setState({
+        validated: true,
+      });
+      return;
+    }
+    e.preventDefault();
+
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('user');
+
+    axios.put(`https://myflixbypartearroyo.herokuapp.com/users/${username}`, {
+      headers: { Authorization: `Bearer ${token}` },
+      data: {
+        Name: newName ? newName : this.state.Name,
+        Username: newUsername ? newUsername : this.state.Username,
+        Password: newPassword ? newPassword : this.state.Password,
+        Email: newEmail ? newEmail : this.state.Email,
+        Birthday: newBirthday ? newBirthday : this.state.Birthday,
+      },
+    })
+      .then((response) => {
+        alert('Saved Changes');
+        this.setState({
+          Name: response.data.Name,
+          Username: response.data.Username,
+          Password: response.data.Password,
+          Email: response.data.Email,
+          Birthday: response.data.Birthday,
+        });
+        localStorage.setItem('user', this.state.Username);
+        window.open(`/users/${username}`, '_self');
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }  
+
+setName(input) {
+    this.Name = input;
+  }
+
+  setUsername(input) {
+    this.Username = input;
+  }
+
+  setPassword(input) {
+    this.Password = input;
+  }
+
+  setEmail(input) {
+    this.Email = input;
+  }
+
+  setBirthday(input) {
+    this.Birthday = input;
+  }
+
+
 handleDelete() {
 
 const answer = window.confirm("This cannot be undone, are you sure?");
@@ -109,6 +177,51 @@ render() {
                             <Card.Title as='h3'>{movie.Title}</Card.Title>
                         </Link>
                             <Button className='mb-4' variant="outline-secondary" size="sm" onClick={() => this.handleRemove(movie)}>Remove from Favourites</Button> 
+                        </Card.Body>
+
+                        <h1 className="section">Update Profile</h1>
+                        <Card.Body>
+                        <Form noValidate validated={validated} className="update-form" onSubmit={(e) => this.handleUpdate(e, this.Name, this.Username, this.Password, this.Email, this.Birthday)}>
+
+                            <Form.Group controlId="formName">
+                            <Form.Label className="form-label">Name</Form.Label>
+                            <Form.Control type="text" placeholder="Change Name" onChange={(e) => this.setName(e.target.value)} />
+                            </Form.Group>
+
+                            <Form.Group controlId="formBasicUsername">
+                            <Form.Label className="form-label">Username</Form.Label>
+                            <Form.Control type="text" placeholder="Change Username" onChange={(e) => this.setUsername(e.target.value)} />
+                            </Form.Group>
+
+                            <Form.Group controlId="formBasicPassword">
+                            <Form.Label className="form-label">
+                                Password<span className="required">*</span>
+                            </Form.Label>
+                            <Form.Control type="password" placeholder="New Password" onChange={(e) => this.setPassword(e.target.value)} />
+                            </Form.Group>
+
+                            <Form.Group controlId="formBasicEmail">
+                            <Form.Label className="form-label">Email</Form.Label>
+                            <Form.Control type="email" placeholder="Change Email" onChange={(e) => this.setEmail(e.target.value)} />
+                            </Form.Group>
+
+                            <Form.Group controlId="formBasicBirthday">
+                            <Form.Label className="form-label">Birthday</Form.Label>
+                            <Form.Control type="date" placeholder="Change Birthday" onChange={(e) => this.setBirthday(e.target.value)} />
+                            </Form.Group>
+
+                            <Button variant='danger' type="submit">
+                            Update
+                            </Button>
+
+                            <h3>Delete your Account</h3>
+                            <Card.Body>
+                            <Button variant='danger' onClick={(e) => this.handleDelete(e)}>
+                                Delete Account
+                            </Button>
+                            </Card.Body>
+                        </Form>
+
                         </Card.Body>
                     </Card>
                     </div>
