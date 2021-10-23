@@ -63,6 +63,7 @@ const formValidation = () => {
 
 return (
   <div className="register-wrapper">
+    <h1> Registration View </h1>
     <Form className="register-form"
       noValidate>
       <Form.Group>

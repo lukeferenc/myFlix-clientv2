@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {Button} from 'react-bootstrap';
 import axios from 'axios';
+import usePlaceholder from 'react-bootstrap/esm/usePlaceholder';
 
 export function ProfileEdit(props) {
     //const {password, setPassword};
@@ -16,12 +17,12 @@ export function ProfileEdit(props) {
         setPassword(props.password);
         setBirthday(props.birthday);
         setEmail(props.email);
-      }, [props]); 
+      }, [props.username]); 
 
     function handleUpdate(e) {
         e.preventDefault()
         let token = localStorage.getItem("token");
-        axios.put( `https://lukesmovies.herokuapp.com/users/${username}`,
+        axios.put( `https://lukesmovies.herokuapp.com/users/${localStorage.getItem("user")}`,
           { 
               Username: username,
               Password: password,
@@ -33,6 +34,7 @@ export function ProfileEdit(props) {
           .then((response) => {
               const data = response.data;
               console.log(data);
+              localStorage.setItem("user", username )
               alert(username + " has been updated.");
               window.location.reload()
           })
@@ -48,7 +50,7 @@ export function ProfileEdit(props) {
             <label for="username">Username</label><br/>
             <input type="text" value={username} onChange={(e)=>setUsername(e.target.value)}/><br/>
             <label for="password">Password</label><br/>
-            <input onChange={(e)=>setPassword(e.target.value)}/><br/>
+            <input placeholder="Enter Your old Password or add a New One" type="password" onChange={(e)=>setPassword(e.target.value)}/><br/>
             <label for="birthday">Birthday</label><br/>
             <input type="text" value={birthday} onChange={(e)=>setBirthday(e.target.value)}/><br/>
             <label for="email">Email</label><br/>

@@ -20,12 +20,13 @@ export class MovieView extends React.Component {
     document.removeEventListener('keypress', this.keypressCallback);
   }
 
-  addFavorite() {
+  addFavourite(_id) {
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('user');
 
     axios.post(`https://lukesmovies.herokuapp.com/users/${username}/movies/${this.props.movie._id}`, {}, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
+      method: 'POST'
     })
       .then(response => {
         alert(`Added to Favorites List`)
@@ -64,8 +65,8 @@ export class MovieView extends React.Component {
           </Link>
           <span className="value">{movie.Director.Name}</span>
         </div>
-        <Button variant='danger' className="fav-button" value={movie._id} onClick={(e) => this.addFavorite(e, movie)}>
-          Add to Favorites
+        <Button variant='danger' className="fav-button" value={movie._id} onClick={(e) => this.addFavourite(e, movie)}>
+          Add to Favourites
         </Button>
         <Button variant="primary" onClick={() => { onBackClick(null); }}>Back</Button>
       </div>

@@ -104,6 +104,7 @@ class MainView extends React.Component {
 
     if (!user) return <Row>
       <Col>
+        <RegistrationView />
         <LoginView onLoggedIn={user => this.onLoggedIn(user)} />
       </Col>
     </Row>
@@ -135,7 +136,7 @@ class MainView extends React.Component {
             <Route path="/profile" render={() => {
                 return (
                   <Col> 
-                    <ProfileView movies={movies} user={user}/>
+                    <ProfileView username={username} password={password} email={email} birthday={birthday} favourites={favourites} movies={movies} onBackClick={() => history.goBack()} removeMovie={(_id) => this.removeFromFavourites(_id)} />
                   </Col>
                 )
             }} />
