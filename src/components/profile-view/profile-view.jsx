@@ -1,5 +1,6 @@
 import React from 'react';
-import {Row, Col, Button, Container, Card } from 'react-bootstrap';
+import {Row, Col, Button, Container, Card, CardDeck, Form } from 'react-bootstrap';
+import { Link } from "react-router-dom";
 import PropTypes, { string } from 'prop-types';
 import axios from 'axios';
 import './profile-view.scss';
@@ -13,6 +14,7 @@ export class ProfileView extends React.Component {
         email: null,
         birthday: null,
         Favourites: [],
+        validated: null,
       }
     }
 
@@ -52,6 +54,8 @@ axios.post(`https://lukesmovies.herokuapp.com/users/removefromfavs/${user}/` +
     window.location.reload(false);
     })
 }
+
+
 
 handleDelete() {
 
@@ -115,6 +119,11 @@ render() {
                 </Col>
                 );
             })}
+            </Row>
+            <Row>
+                <Col>
+                    <Link to={"/profileEdit"}>Edit Profile</Link>
+                </Col>
             </Row>
             <Row>
             <Col className="acc-btns mt-1">

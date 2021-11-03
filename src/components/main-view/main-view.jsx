@@ -10,6 +10,7 @@ import { DirectorView } from '../director-view/director-view';
 import { RegistrationView } from '../registration-view/registration-view';
 import { GenreView } from '../genre-view/genre-view';
 import { ProfileView } from '../profile-view/profile-view';
+import { ProfileEdit } from '../profile-view/profile-edit';
 import { NavBar } from '../navbar-view/navbar-view';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -22,6 +23,12 @@ class MainView extends React.Component {
       movies:[],
       selectedMovie: null,
       register: false,
+      username: null,
+      password: null,
+      email: null,
+      birthday: null,
+      favourites: []
+      
     };
   }
 
@@ -33,6 +40,7 @@ class MainView extends React.Component {
         user: localStorage.getItem('user')
       });
       this.getMovies(accessToken);
+      this.getUser(accessToken);
     }
   }
 
@@ -65,19 +73,38 @@ class MainView extends React.Component {
       })
   }
 
+  getUser(token) {
+    let url = 'https://lukesmovies.herokuapp.com/users/' +
+        localStorage.getItem('user');
+    axios
+        .get(url, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+            this.setState({
+                username: response.data.Username,
+                password: response.data.Password,
+                email: response.data.Email,
+                birthday: response.data.Birthday,
+                favourites: response.data.Favourites,
+            });
+        });
+  }
+  
+  
+
   onRegister(register) {
     this.setState({
       register: register,
     });
   }
 
-
-
   render() {
-    const { movies, user } = this.state;
+    const { movies, user, username, password, birthday, email, favourites } = this.state;
 
     if (!user) return <Row>
       <Col>
+        <RegistrationView />
         <LoginView onLoggedIn={user => this.onLoggedIn(user)} />
       </Col>
     </Row>
@@ -109,10 +136,19 @@ class MainView extends React.Component {
             <Route path="/profile" render={() => {
                 return (
                   <Col> 
-                    <ProfileView movies={movies} user={user}/>
+                    <ProfileView username={username} password={password} email={email} birthday={birthday} favourites={favourites} movies={movies} onBackClick={() => history.goBack()} removeMovie={(_id) => this.removeFromFavourites(_id)} />
                   </Col>
                 )
             }} />
+
+            <Route path="/profileEdit" render={() => {
+                return (
+                  <Col> 
+                    <ProfileEdit username={username} password={password} birthday={birthday} email={email} favourites={favourites}/>
+                  </Col>
+                )
+            }} />
+
 
           
           <Route path="/movies/:movieId" render={({ match, history }) => {
