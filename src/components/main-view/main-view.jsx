@@ -1,10 +1,13 @@
 import React from "react";
 import axios from 'axios';
 
+import { connect } from 'react-redux';
+
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 
+import { setMovies } from '../../actions/actions';
+import MoviesList from '../movies-list/movies-list';
 import { LoginView } from '../login-view/login-view';
-import { MovieCard } from '../movie-card/movie-card';
 import { MovieView } from '../movie-view/movie-view';
 import { DirectorView } from '../director-view/director-view';
 import { RegistrationView } from '../registration-view/registration-view';
@@ -17,18 +20,12 @@ import Col from 'react-bootstrap/Col';
 import './main-view.scss';
 
 class MainView extends React.Component {
-  constructor() {
+ 
+  constructor(){
     super();
     this.state = {
-      movies:[],
-      selectedMovie: null,
-      register: false,
-      username: null,
-      password: null,
-      email: null,
-      birthday: null,
-      favourites: []
       
+      user: null
     };
   }
 
@@ -61,16 +58,13 @@ class MainView extends React.Component {
     axios.get('https://lukesmovies.herokuapp.com/movies', {
       headers: { Authorization: `Bearer ${token}` }
     })
-      .then(response => {
-        // Assign the result to the state
-        console.log(response);
-        this.setState({
-          movies: response.data
-        });
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
+    .then(response => {
+      // Assigns the result to the state
+      this.props.setMovies(response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   }
 
   getUser(token) {
@@ -100,7 +94,9 @@ class MainView extends React.Component {
   }
 
   render() {
-    const { movies, user, username, password, birthday, email, favourites } = this.state;
+    let { movies } = this.props;
+    let { user } = this.state;
+
 
     if (!user) return <Row>
       <Col>
@@ -114,43 +110,45 @@ class MainView extends React.Component {
       <Router>
         <NavBar user={user}/>
         <Row className="main-view justify-content-md-center">
-            <Route exact path="/" render={() => {
-              if (!user) return <Col>
-                <LoginView onLoggedIn={user => this.onLoggedIn(user)} />
-              </Col>
-              if (movies.length === 0) return <div className="main-view" />;
-              return movies.map(m => (
-                <Col md={3} key={m._id}>
-                  <MovieCard movie={m} />
-                </Col>
-              ))
-            }} />
-  
-            <Route path="/register" render={() => {
-              if (user) return <Redirect to="/" />
-              return <Col>
-                <RegistrationView />
-              </Col>
-            }} />
-  
-            <Route path="/profile" render={() => {
-                return (
-                  <Col> 
-                    <ProfileView username={username} password={password} email={email} birthday={birthday} favourites={favourites} movies={movies} onBackClick={() => history.goBack()} removeMovie={(_id) => this.removeFromFavourites(_id)} />
-                  </Col>
-                )
-            }} />
+          <Route exact path="/" render={() => {
+            if (!user) return <Col>
+              <LoginView onLoggedIn={user => this.onLoggedIn(user)} />
+            </Col>
 
-            <Route path="/profileEdit" render={() => {
-                return (
-                  <Col> 
-                    <ProfileEdit username={username} password={password} birthday={birthday} email={email} favourites={favourites}/>
-                  </Col>
-                )
-            }} />
+            if (movies.length === 0) return (<div className="main-view" />);
+                  return <MoviesList movies={movies}/>;
+          }} />
 
-
+          <Route path="/register" render={() => {
+                if (user) return <Redirect to="/" />
+                return <Col>
+                  <RegistrationView />
+            </Col>
+          }} />
           
+          <Route path="/register" render={() => {
+            if (user) return <Redirect to="/" />
+            return <Col>
+              <RegistrationView />
+            </Col>
+          }} />
+  
+          <Route path="/profile" render={() => {
+            return (
+              <Col> 
+                <ProfileView username={username} password={password} email={email} birthday={birthday} favourites={favourites} movies={movies} onBackClick={() => history.goBack()} removeMovie={(_id) => this.removeFromFavourites(_id)} />
+              </Col>
+            )
+          }} />
+
+          <Route path="/profileEdit" render={() => {
+            return (
+              <Col> 
+                <ProfileEdit username={username} password={password} birthday={birthday} email={email} favourites={favourites}/>
+              </Col>
+            )
+          }} />
+
           <Route path="/movies/:movieId" render={({ match, history }) => {
             if (!user) return <Col>
               <LoginView onLoggedIn={user => this.onLoggedIn(user)} />
@@ -194,4 +192,8 @@ class MainView extends React.Component {
   }
 }
 
-export default MainView;
+let mapStateToProps = state => {
+  return { movies: state.movies }
+}
+
+export default connect(mapStateToProps, { setMovies } )(MainView);
