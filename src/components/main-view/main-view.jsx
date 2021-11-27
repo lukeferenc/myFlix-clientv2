@@ -136,7 +136,7 @@ class MainView extends React.Component {
           <Route path="/profile" render={() => {
             return (
               <Col> 
-                <ProfileView username={user} onBackClick={() => history.goBack()} removeMovie={(_id) => this.removeFromFavourites(_id)} />
+                <ProfileView username={user} movies={movies} onBackClick={() => history.goBack()} removeMovie={(_id) => this.removeFromFavourites(_id)} />
               </Col>
             )
           }} />
