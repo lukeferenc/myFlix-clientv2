@@ -136,7 +136,7 @@ class MainView extends React.Component {
           <Route path="/profile" render={() => {
             return (
               <Col> 
-                <ProfileView username={username} password={password} email={email} birthday={birthday} favourites={favourites} movies={movies} onBackClick={() => history.goBack()} removeMovie={(_id) => this.removeFromFavourites(_id)} />
+                <ProfileView username={user} onBackClick={() => history.goBack()} removeMovie={(_id) => this.removeFromFavourites(_id)} />
               </Col>
             )
           }} />
@@ -144,7 +144,7 @@ class MainView extends React.Component {
           <Route path="/profileEdit" render={() => {
             return (
               <Col> 
-                <ProfileEdit username={username} password={password} birthday={birthday} email={email} favourites={favourites}/>
+                <ProfileEdit username={user}/>
               </Col>
             )
           }} />
